@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestAnnotationForTesting {
 
-  public class NONE extends Throwable {
+  class NONE extends Throwable {
     private NONE() {
     }
 

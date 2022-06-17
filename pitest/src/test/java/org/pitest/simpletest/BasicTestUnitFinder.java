@@ -30,6 +30,7 @@ import java.util.function.Predicate;
 import org.pitest.functional.FCollection;
 import org.pitest.reflection.Reflection;
 import org.pitest.simpletest.steps.CallStep;
+import org.pitest.simpletest.steps.NoArgsInstantiateStep;
 import org.pitest.testapi.Description;
 import org.pitest.testapi.TestUnit;
 import org.pitest.testapi.TestUnitFinder;
@@ -37,13 +38,9 @@ import org.pitest.util.PitError;
 
 public class BasicTestUnitFinder implements TestUnitFinder {
 
-  private final Set<InstantiationStrategy> instantiationStrategies = new LinkedHashSet<>();
   private final MethodFinder          testMethodFinder;
 
-  public BasicTestUnitFinder(
-      final Collection<InstantiationStrategy> instantiationStrategies,
-      final MethodFinder testMethodFinder) {
-    this.instantiationStrategies.addAll(instantiationStrategies);
+  public BasicTestUnitFinder(MethodFinder testMethodFinder) {
     this.testMethodFinder = testMethodFinder;
   }
 
@@ -52,17 +49,11 @@ public class BasicTestUnitFinder implements TestUnitFinder {
     try {
 
       final List<TestUnit> units = new ArrayList<>();
-      final InstantiationStrategy instantiationStrategy = findInstantiationStrategy(testClass);
-      final List<TestStep> instantiations = instantiationStrategy
-          .instantiations(testClass);
-      for (int instantiation = 0; instantiation != instantiations.size(); instantiation++) {
-        for (final TestMethod m : findTestMethods(testClass)) {
-          final TestStep step = instantiations.get(instantiation);
-          units
-          .add(createTestUnitForInstantiation(step,
-              getNamePrefix(instantiations.size(), instantiation),
-              testClass, m));
-        }
+      final TestStep instantiation = NoArgsInstantiateStep.instantiate(testClass);
+
+      for (final TestMethod m : findTestMethods(testClass)) {
+                units.add(createTestUnitForInstantiation(instantiation,
+              "", testClass, m));
       }
 
       return units;
@@ -72,13 +63,6 @@ public class BasicTestUnitFinder implements TestUnitFinder {
     }
   }
 
-  private String getNamePrefix(final int size, final int i) {
-    if (size == 1) {
-      return "";
-    } else {
-      return "[" + i + "] ";
-    }
-  }
 
   private TestUnit createTestUnitForInstantiation(
       final TestStep instantiationStep, final String namePrefix,
@@ -95,28 +79,12 @@ public class BasicTestUnitFinder implements TestUnitFinder {
 
   }
 
-  private InstantiationStrategy findInstantiationStrategy(final Class<?> clazz) {
-    final List<InstantiationStrategy> strategies = FCollection.filter(
-        this.instantiationStrategies, canInstantiate(clazz));
-    if (strategies.isEmpty()) {
-      throw new PitError("Cannot instantiate " + clazz);
-    } else {
-      return strategies.get(0);
-    }
-  }
-
-  private Predicate<InstantiationStrategy> canInstantiate(final Class<?> clazz) {
-    return a -> a.canInstantiate(clazz);
-  }
-
   private Collection<TestMethod> findTestMethods(final Class<?> clazz) {
-
     final EqualitySet<TestMethod> set = new EqualitySet<>(
         new SignatureEqualityStrategy());
     final Consumer<Optional<TestMethod>> addToSet = a -> a.ifPresent(m -> set.add(m));
     final Collection<Method> methods = Reflection.allMethods(clazz);
     methods.stream().map(this.testMethodFinder).forEach(addToSet);
-
 
     return set.toCollection();
   }

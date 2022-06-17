@@ -11,9 +11,6 @@ import org.pitest.classpath.ClassloaderByteArraySource;
 import org.pitest.mutationtest.engine.Mutant;
 import org.pitest.mutationtest.engine.MutationDetails;
 import org.pitest.mutationtest.engine.gregor.GregorMutater;
-import org.pitest.simpletest.ExcludedPrefixIsolationStrategy;
-import org.pitest.simpletest.Transformation;
-import org.pitest.simpletest.TransformingClassLoader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -85,7 +82,6 @@ public class MutatorVerifier {
     protected ClassLoader createClassLoader(Mutant mutant) {
         return new TransformingClassLoader(new ClassPath(),
                 this.createTransformation(mutant),
-                new ExcludedPrefixIsolationStrategy(new String[0]),
                 Object.class.getClassLoader());
     }
 

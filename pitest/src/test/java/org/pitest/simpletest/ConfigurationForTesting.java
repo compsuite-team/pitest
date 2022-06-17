@@ -36,14 +36,8 @@ public class ConfigurationForTesting implements Configuration {
 
   @Override
   public TestUnitFinder testUnitFinder() {
-    final List<InstantiationStrategy> instantiationStrategies =
-
-        Arrays
-        .<InstantiationStrategy> asList(new NoArgsConstructorInstantiationStrategy());
-
     return new CompoundTestUnitFinder(
-        Collections.<TestUnitFinder> singletonList(new BasicTestUnitFinder(
-            instantiationStrategies, new TestFinder())));
+        Collections.singletonList(new BasicTestUnitFinder(new TestFinder())));
   }
 
   @Override

@@ -12,27 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
-package org.pitest.simpletest;
+package org.pitest.verifier.mutants;
 
 import org.pitest.classpath.ClassPath;
 import org.pitest.mutationtest.execute.DefaultPITClassloader;
 
 public class TransformingClassLoader extends DefaultPITClassloader {
 
-  private final Transformation    transformation;
-  private final IsolationStrategy isolationStrategy;
-
-  public TransformingClassLoader(final Transformation transformation,
-      final IsolationStrategy isolationStrategy) {
-    this(new ClassPath(), transformation, isolationStrategy, bootClassLoader());
-  }
+  private final Transformation transformation;
 
   public TransformingClassLoader(final ClassPath classPath,
-      final Transformation transformation,
-      final IsolationStrategy isolationStrategy, final ClassLoader parent) {
+      final Transformation transformation, final ClassLoader parent) {
     super(classPath, parent);
     this.transformation = transformation;
-    this.isolationStrategy = isolationStrategy;
   }
 
   @Override
@@ -42,15 +34,7 @@ public class TransformingClassLoader extends DefaultPITClassloader {
   }
 
   private byte[] transform(final String name, final byte[] bytes) {
-    if (this.isolationStrategy.shouldIsolate(name)) {
       return this.transformation.transform(name, bytes);
-    } else {
-      return bytes;
-    }
-  }
-
-  public static ClassLoader bootClassLoader() {
-    return Object.class.getClassLoader();
   }
 
 }
