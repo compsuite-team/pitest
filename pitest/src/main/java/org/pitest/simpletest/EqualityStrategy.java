@@ -16,6 +16,6 @@ package org.pitest.simpletest;
 
 public interface EqualityStrategy<T> {
 
-  public boolean isEqual(T lhs, T rhs);
+  boolean isEqual(T lhs, T rhs);
 
 }

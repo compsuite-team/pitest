@@ -67,7 +67,7 @@ public final class TestMethod {
       return false;
     }
     final TestMethod other = (TestMethod) obj;
-    return Objects.equals(method, other.method) &&
-            Objects.equals(expected, other.expected);
+    return Objects.equals(method, other.method)
+            && Objects.equals(expected, other.expected);
   }
 }

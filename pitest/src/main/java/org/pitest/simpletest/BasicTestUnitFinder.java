@@ -20,21 +20,16 @@ import static org.pitest.util.Unchecked.translateCheckedException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import org.pitest.functional.FCollection;
 import org.pitest.reflection.Reflection;
 import org.pitest.simpletest.steps.CallStep;
 import org.pitest.simpletest.steps.NoArgsInstantiateStep;
 import org.pitest.testapi.Description;
 import org.pitest.testapi.TestUnit;
 import org.pitest.testapi.TestUnitFinder;
-import org.pitest.util.PitError;
+
 
 public class BasicTestUnitFinder implements TestUnitFinder {
 
