@@ -36,8 +36,7 @@ public class ConfigurationForTesting implements Configuration {
 
   @Override
   public TestUnitFinder testUnitFinder() {
-    return new CompoundTestUnitFinder(
-        Collections.singletonList(new BasicTestUnitFinder(new TestFinder())));
+    return new BasicTestUnitFinder(new TestFinder());
   }
 
   @Override
